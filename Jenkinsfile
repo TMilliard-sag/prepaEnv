@@ -683,7 +683,7 @@ pipeline {
 	agent any
 	environment {
 		
-		GIT_ACCOUNT='johnpcarter'
+		GIT_ACCOUNT='TMilliard-sag'
 		GIT_REPO='devops-demo'
 
 		APIGW_SERVER='http://devops-demo_wm-api-gateway_1:5555'
