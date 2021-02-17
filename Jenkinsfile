@@ -276,6 +276,29 @@ def createStage(apigwUrl, stageName, stageDescription, stageURL, stageUsername, 
 	return id;
 }
 
+// Creation of Alias
+def createAlias(apigwUrl, stageID, aliasName, aliasDescription, aliasValue ) {
+
+	def body = """{
+	   "name": "${aliasName}",
+	   "description": "${aliasDescription}",
+	   "value": "${aliasValue}",
+	   "stage": "${stageID}",
+	   "type": "simple"
+	}"""
+	println("Body is : ${body} ");
+
+	response = httpRequest acceptType: 'APPLICATION_JSON', 
+				authentication: 'wm-apigateway', 
+				contentType: 'APPLICATION_JSON', 
+				httpMode: 'POST', 
+				ignoreSslErrors: true, 
+				requestBody: body, 
+				url: "${apigwUrl}/rest/apigateway/alias", 
+				validResponseCodes: '200:299'
+
+}
+
 
 def getStageId(apigwUrl, stageName) {
 
@@ -723,6 +746,7 @@ pipeline {
 		
 		API_SERVER='http://devops-demo_helloworld_1:5555'
 
+
 		APIPORTAL="default"
 		APIPORTAL_COMMUNITY="Public Community"
 		API_TEST_APP="TestApp"
@@ -792,11 +816,13 @@ pipeline {
 				script {
 						try {
 							STAGE_PROD_ID = createStage(APIGW_SERVER, API_STAGE_PROD, API_STAGE_PROD_DESCRIPTION, API_STAGE_PROD_URL, "Administrator", "Manage")
+							createAlias(APIGW_SERVER, STAGE_PROD_ID, "API_HOST", "Back end for service", "${API_SERVER}" )
 						} catch (err) {
 							println("Promotion env creation error : "+err)
 						}
 						try {
 							STAGE_ID = createStage(APIGW_SERVER, API_STAGE, API_STAGE_DESCRIPTION, API_STAGE_URL, "thierry.milliard@softwareag.com", "M@nage123")
+							createAlias(APIGW_SERVER, STAGE_ID, "API_HOST", "Back end for service", "${API_SERVER}" )
 						} catch (err) {
 							println("Promotion env creation error : "+err)
 						}						
