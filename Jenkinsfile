@@ -754,7 +754,7 @@ pipeline {
 							[$class: 'TextParameterDefinition', defaultValue: API_STAGE, description: 'API Gatway Stage ', name: 'apiStage'],
 							[$class: 'TextParameterDefinition', defaultValue: API_STAGE_DESCRIPTION, description: 'API Gatway Stage description', name: 'apiStageDescription'],
 							[$class: 'TextParameterDefinition', defaultValue: API_STAGE_PROD, description: 'API Gatway PROD Stage ', name: 'apiStageProd'],
-							[$class: 'TextParameterDefinition', defaultValue: API_STAGE_PROD_DESCRIPTION, description: 'API Gatway PROD Stage Description ', name: 'apiStageProdDescription'],
+							[$class: 'TextParameterDefinition', defaultValue: API_STAGE_PROD_DESCRIPTION, description: 'API Gatway PROD Stage Description ', name: 'apiStageProdDescription']
 						])
 
 					API_SERVER=esbInput['esbServer']
