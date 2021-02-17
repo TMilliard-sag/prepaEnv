@@ -694,6 +694,7 @@ pipeline {
 		APIPORTAL_COMMUNITY="Public Community"
 		API_TEST_APP="TestApp"
 		API_STAGE="UAT"
+		API_STAGE_PROD="PROD"
 	}
 	stages {
 		stage('Prepare') {
@@ -714,11 +715,13 @@ pipeline {
 							[$class: 'TextParameterDefinition', defaultValue: API_SERVER, description: 'API Runtime Container', name: 'esbServer'],
 							[$class: 'TextParameterDefinition', defaultValue: APIGW_SERVER, description: 'webMethods API Gateway', name: 'apiServer'],
 							[$class: 'TextParameterDefinition', defaultValue: API_STAGE, description: 'API Gatway Stage (optional)', name: 'apiStage'],
+							[$class: 'TextParameterDefinition', defaultValue: API_STAGE_PROD, description: 'API Gatway PROD Stage ', name: 'apiStageProd'],
 						])
 
 					API_SERVER=esbInput['esbServer']
 					APIGW_SERVER=esbInput['apiServer']
 					API_STAGE=esbInput['apiStage'];
+					API_STAGE_PROD=esbInput['apiStageProd'];
 
 					def apiInput = input(
 						id: 'apiInput', message: 'API Details', parameters: [
@@ -820,22 +823,18 @@ pipeline {
 				}
 			}
 		}
-		stage('Publish') {
+		stage('ToProd') {
 			when {
-				expression { PROD_API_IDS.size() > 0 }
+				expression { PROD_API_IDS.size() > 0 && API_STAGE_PROD != ""}
 			}
 			steps {
-				input("UAT Promotion Completed, Ready to Publish?")
+				input("UAT Promotion Completed, Ready to deploy in Prod?")
 				script {
-					print("Publishing API to API Portal")
+					print("Publishing API to PROD GW (10.7)")
 
 					PROD_API_IDS.each{apiRef ->
 						println("publi")
-						if (API_STAGE != "") {
-							publishAPI(APIGW_SERVER, getStageId(APIGW_SERVER, API_STAGE), apiRef, APIPORTAL, APIPORTAL_COMMUNITY)
-						} else {
-							publishAPI(APIGW_SERVER, null, apiRef, APIPORTAL, APIPORTAL_COMMUNITY)
-						}
+						promoteAPI(APIGW_SERVER, getStageId(APIGW_SERVER, API_STAGE_PROD), PROD_API_IDS)
 					}
 				}
 			}
