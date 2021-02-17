@@ -836,7 +836,8 @@ pipeline {
 			}*/
 			steps {
 				script {
-					
+					println("TODO : Create Test APP")
+
 				}
 			}
 		}
@@ -844,6 +845,7 @@ pipeline {
 			steps {
 				input("Deployment Completed, Ready to Test?")
 				script {
+					println("TODO : Create ActivateGlobalPolicies function")
 
 /*					PROD_API_IDS = []
 					FAILED_API_IDS = []
