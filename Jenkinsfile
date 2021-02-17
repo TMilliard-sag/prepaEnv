@@ -4,6 +4,8 @@
 // Developed by John Carter (john.carter@softewareag.com)
 // November 2018
 
+// Adapted 2021-02-17 preparation of the envs before demo
+
 // Run command on remote server, requires propagation of jenkins server key to remote server
 def ssh(id, server, command) {
 	sh("ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no $id@$server $command")
@@ -243,6 +245,36 @@ def getPortalCommunityId(apigwUrl, auth, portalId, communityName) {
 	
 	return id;
 }
+
+// Creation of Stage
+def createStage(apigwUrl, stageName, stageDescription, stageURL, stageUsername, stagePwd) { // assuming default keystore and alis
+
+	def body = """{
+  		"name": "${stageName}",
+  		"description": "${stageDescription}",
+  		"url": "${stageURL}",
+  		"username": "${stageUsername}",
+  		"password": "${stagePwd}",
+  		"keystoreAlias": "DEFAULT_IS_KEYSTORE",
+  		"keyAlias": "ssos"
+	}"""
+	
+	response = httpRequest acceptType: 'APPLICATION_JSON', 
+				authentication: 'wm-apigateway', 
+				contentType: 'APPLICATION_JSON', 
+				httpMode: 'POST', 
+				ignoreSslErrors: true, 
+				requestBody: "", 
+				url: "${apigwUrl}/rest/apigateway/stages", 
+				validResponseCodes: '200:299'
+
+	def jsn = readJSON file: '', text: "${response.content}"
+
+	def id = jsn.stage.id;
+	
+	return id;
+}
+
 
 def getStageId(apigwUrl, stageName) {
 
@@ -694,7 +726,12 @@ pipeline {
 		APIPORTAL_COMMUNITY="Public Community"
 		API_TEST_APP="TestApp"
 		API_STAGE="UAT"
+		API_STAGE_DESCRIPTION="UAT stage description"
+		API_STAGE_URL="https://pocadeo.apigw-az-eu.webmethods.io"
 		API_STAGE_PROD="PROD"
+		API_STAGE_PROD_DESCRIPTION="PROD stage description"
+		API_STAGE_PROD_URL="http://devops-demo_wm-api-gateway-prod_1:5555"
+
 	}
 	stages {
 		stage('Prepare') {
@@ -714,14 +751,18 @@ pipeline {
 						id: 'esbInput', message: 'API & Service Containers', parameters: [
 							[$class: 'TextParameterDefinition', defaultValue: API_SERVER, description: 'API Runtime Container', name: 'esbServer'],
 							[$class: 'TextParameterDefinition', defaultValue: APIGW_SERVER, description: 'webMethods API Gateway', name: 'apiServer'],
-							[$class: 'TextParameterDefinition', defaultValue: API_STAGE, description: 'API Gatway Stage (optional)', name: 'apiStage'],
+							[$class: 'TextParameterDefinition', defaultValue: API_STAGE, description: 'API Gatway Stage ', name: 'apiStage'],
+							[$class: 'TextParameterDefinition', defaultValue: API_STAGE_DESCRIPTION, description: 'API Gatway Stage description', name: 'apiStageDescription'],
 							[$class: 'TextParameterDefinition', defaultValue: API_STAGE_PROD, description: 'API Gatway PROD Stage ', name: 'apiStageProd'],
+							[$class: 'TextParameterDefinition', defaultValue: API_STAGE_PROD_DESCRIPTION, description: 'API Gatway PROD Stage Description ', name: 'apiStageProdDescription'],
 						])
 
 					API_SERVER=esbInput['esbServer']
 					APIGW_SERVER=esbInput['apiServer']
 					API_STAGE=esbInput['apiStage'];
+					API_STAGE_DESCRIPTION=esbInput['apiStageDescription'];
 					API_STAGE_PROD=esbInput['apiStageProd'];
+					API_STAGE_PROD_DESCRIPTION=esbInput['apiStageProdDescription'];
 
 					def apiInput = input(
 						id: 'apiInput', message: 'API Details', parameters: [
@@ -740,6 +781,17 @@ pipeline {
 
 					println("GIT ACCOUNT IS " + GIT_ACCOUNT);
 
+				}
+			}
+		}
+		// createStage(apigwUrl, stageName, stageDescription, stageURL, stageUsername, stagePwd)
+		
+		stage('Set Targets') {
+			// hard-coded below to keep jenkins setup simples!!
+			steps {
+				script {
+					STAGE_ID = createStage(APIGW_SERVER, API_STAGE, API_STAGE_DESCRIPTION, "thierry.milliard@softwareag.com", "M@nage123")
+					STAGE_PROD_ID = createStage(APIGW_SERVER, API_STAGE_PROD, API_STAGE_PROD_DESCRIPTION, "Administrator", "Manage")
 				}
 			}
 		}
