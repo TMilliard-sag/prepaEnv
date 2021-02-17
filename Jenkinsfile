@@ -250,13 +250,13 @@ def getPortalCommunityId(apigwUrl, auth, portalId, communityName) {
 def createStage(apigwUrl, stageName, stageDescription, stageURL, stageUsername, stagePwd) { // assuming default keystore and alis
 
 	def body = """{
-  		"name": "${stageName}",
-  		"description": "${stageDescription}",
-  		"url": "${stageURL}",
-  		"username": "${stageUsername}",
-  		"password": "${stagePwd}",
-  		"keystoreAlias": "DEFAULT_IS_KEYSTORE",
-  		"keyAlias": "ssos"
+	   "name": "${stageName}",
+	   "description": "${stageDescription}",
+	   "url": "${stageURL}",
+	   "username": "${stageUsername}",
+	   "password": "${stagePwd}",
+	   "keystoreAlias": "DEFAULT_IS_KEYSTORE",
+	   "keyAlias": "ssos"
 	}"""
 	println("Body is : ${body} for stage name ${stageName}");
 
