@@ -786,7 +786,7 @@ pipeline {
 		}
 		// createStage(apigwUrl, stageName, stageDescription, stageURL, stageUsername, stagePwd)
 		
-		stage('Set Targets') {
+		stage('SetTargets') {
 			// hard-coded below to keep jenkins setup simples!!
 			steps {
 				script {
