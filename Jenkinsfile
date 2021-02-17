@@ -837,7 +837,6 @@ pipeline {
 			steps {
 				script {
 					
-//					TST_API_IDS = deployAPIsFromGitHubToAPIGateway(APIGW_SERVER, GIT_ACCOUNT, GIT_REPO, "Administrator", "Password", "${WORKSPACE}")
 				}
 			}
 		}
