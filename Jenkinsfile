@@ -829,7 +829,7 @@ pipeline {
 				}
 			}
 		}
-		stage('Deploy') {
+		stage('CreateTestApp') {
 			// hard-coded below to keep jenkins setup simples!!
 			/*environment {
 				REPO_CREDS = credentials('git-apis') 
@@ -837,16 +837,16 @@ pipeline {
 			steps {
 				script {
 					
-					TST_API_IDS = deployAPIsFromGitHubToAPIGateway(APIGW_SERVER, GIT_ACCOUNT, GIT_REPO, "Administrator", "Password", "${WORKSPACE}")
+//					TST_API_IDS = deployAPIsFromGitHubToAPIGateway(APIGW_SERVER, GIT_ACCOUNT, GIT_REPO, "Administrator", "Password", "${WORKSPACE}")
 				}
 			}
 		}
-		stage('Test') {
+		stage('ActivateGlobalPolicies') {
 			steps {
 				input("Deployment Completed, Ready to Test?")
 				script {
 
-					PROD_API_IDS = []
+/*					PROD_API_IDS = []
 					FAILED_API_IDS = []
 
 					TST_API_IDS.each { ref ->
@@ -876,54 +876,10 @@ pipeline {
 							FAILED_API_IDS = FAILED_API_IDS << ref
 						}
 					}
+*/					
 				}
 			}
 		}
-		stage('Rollback') {
-			when {
-				expression { FAILED_API_IDS.size() > 0 }
-			}
-			steps {
-				script {
 
-					FAILED_API_IDS.each { ref -> 
-
-						setAPIMaturity(APIGW_SERVER, ref, "Failed");
-
-						println("Tests failed for API, will restore previous version: "+ref)
-
-					}
-				}
-			}
-		}
-		stage('Promote') {
-			when {
-				expression { PROD_API_IDS.size() > 0 && API_STAGE != ""}
-			}
-			steps {
-				input("Tests Completed, Ready to Promote to ${API_STAGE}?")
-				script {
-					print("Promoting Tested API's to UAT platform")
-
-					promoteAPI(APIGW_SERVER, getStageId(APIGW_SERVER, API_STAGE), PROD_API_IDS)
-				}
-			}
-		}
-		stage('ToProd') {
-			when {
-				expression { PROD_API_IDS.size() > 0 && API_STAGE_PROD != ""}
-			}
-			steps {
-				input("UAT Promotion Completed, Ready to deploy in Prod?")
-				script {
-					print("Publishing API to PROD GW (10.7)")
-
-					PROD_API_IDS.each{apiRef ->
-						println("publi")
-						promoteAPI(APIGW_SERVER, getStageId(APIGW_SERVER, API_STAGE_PROD), PROD_API_IDS)
-					}
-				}
-			}
-		}
 	}
 }
