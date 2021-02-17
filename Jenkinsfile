@@ -784,14 +784,12 @@ pipeline {
 				}
 			}
 		}
-		// createStage(apigwUrl, stageName, stageDescription, stageURL, stageUsername, stagePwd)
-		
 		stage('SetTargets') {
 			// hard-coded below to keep jenkins setup simples!!
 			steps {
 				script {
 					STAGE_ID = createStage(APIGW_SERVER, API_STAGE, API_STAGE_DESCRIPTION, "thierry.milliard@softwareag.com", "M@nage123")
-					STAGE_PROD_ID = createStage(APIGW_SERVER, API_STAGE_PROD, API_STAGE_PROD_DESCRIPTION, "Administrator", "Manage")
+//					STAGE_PROD_ID = createStage(APIGW_SERVER, API_STAGE_PROD, API_STAGE_PROD_DESCRIPTION, "Administrator", "Manage")
 				}
 			}
 		}
