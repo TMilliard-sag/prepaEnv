@@ -789,8 +789,8 @@ pipeline {
 			steps {
 				input("Create targets for deployments. Ready to create ?")
 				script {
-					STAGE_ID = createStage(APIGW_SERVER, API_STAGE, API_STAGE_DESCRIPTION, "thierry.milliard@softwareag.com", "M@nage123")
-//					STAGE_PROD_ID = createStage(APIGW_SERVER, API_STAGE_PROD, API_STAGE_PROD_DESCRIPTION, "Administrator", "Manage")
+					STAGE_ID = createStage(APIGW_SERVER, API_STAGE, API_STAGE_DESCRIPTION, API_STAGE_URL, "thierry.milliard@softwareag.com", "M@nage123")
+					STAGE_PROD_ID = createStage(APIGW_SERVER, API_STAGE_PROD, API_STAGE_PROD_DESCRIPTION, API_STAGE_PROD_URL, "Administrator", "Manage")
 				}
 			}
 		}
