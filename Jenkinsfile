@@ -790,8 +790,16 @@ pipeline {
 			steps {
 				input("Create targets for deployments. Ready to create ?")
 				script {
-					STAGE_PROD_ID = createStage(APIGW_SERVER, API_STAGE_PROD, API_STAGE_PROD_DESCRIPTION, API_STAGE_PROD_URL, "Administrator", "Manage")
-					STAGE_ID = createStage(APIGW_SERVER, API_STAGE, API_STAGE_DESCRIPTION, API_STAGE_URL, "thierry.milliard@softwareag.com", "M@nage123")
+						try {
+							STAGE_PROD_ID = createStage(APIGW_SERVER, API_STAGE_PROD, API_STAGE_PROD_DESCRIPTION, API_STAGE_PROD_URL, "Administrator", "Manage")
+						} catch (err) {
+							println("Promotion env creation error : "+err)
+						}
+						try {
+							STAGE_ID = createStage(APIGW_SERVER, API_STAGE, API_STAGE_DESCRIPTION, API_STAGE_URL, "thierry.milliard@softwareag.com", "M@nage123")
+						} catch (err) {
+							println("Promotion env creation error : "+err)
+						}						
 				}
 			}
 		}
