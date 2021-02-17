@@ -258,13 +258,14 @@ def createStage(apigwUrl, stageName, stageDescription, stageURL, stageUsername, 
   		"keystoreAlias": "DEFAULT_IS_KEYSTORE",
   		"keyAlias": "ssos"
 	}"""
-	
+	println("Body is : ${body} for stage name ${stageName}");
+
 	response = httpRequest acceptType: 'APPLICATION_JSON', 
 				authentication: 'wm-apigateway', 
 				contentType: 'APPLICATION_JSON', 
 				httpMode: 'POST', 
 				ignoreSslErrors: true, 
-				requestBody: "", 
+				requestBody: body, 
 				url: "${apigwUrl}/rest/apigateway/stages", 
 				validResponseCodes: '200:299'
 
@@ -789,8 +790,8 @@ pipeline {
 			steps {
 				input("Create targets for deployments. Ready to create ?")
 				script {
-					STAGE_ID = createStage(APIGW_SERVER, API_STAGE, API_STAGE_DESCRIPTION, API_STAGE_URL, "thierry.milliard@softwareag.com", "M@nage123")
 					STAGE_PROD_ID = createStage(APIGW_SERVER, API_STAGE_PROD, API_STAGE_PROD_DESCRIPTION, API_STAGE_PROD_URL, "Administrator", "Manage")
+					STAGE_ID = createStage(APIGW_SERVER, API_STAGE, API_STAGE_DESCRIPTION, API_STAGE_URL, "thierry.milliard@softwareag.com", "M@nage123")
 				}
 			}
 		}
