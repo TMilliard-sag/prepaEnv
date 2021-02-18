@@ -816,13 +816,13 @@ pipeline {
 				script {
 						try {
 							STAGE_PROD_ID = createStage(APIGW_SERVER, API_STAGE_PROD, API_STAGE_PROD_DESCRIPTION, API_STAGE_PROD_URL, "Administrator", "Manage")
-							createAlias(APIGW_SERVER, STAGE_PROD_ID, "API_HOST", "Back end for service", "${API_SERVER}" )
+							createAlias(APIGW_SERVER, STAGE_PROD_ID, "API_HOST", "Back end for service", "devops-demo_helloworld_1:5555" )
 						} catch (err) {
 							println("Promotion env creation error : "+err)
 						}
 						try {
 							STAGE_ID = createStage(APIGW_SERVER, API_STAGE, API_STAGE_DESCRIPTION, API_STAGE_URL, "thierry.milliard@softwareag.com", "M@nage123")
-							createAlias(APIGW_SERVER, STAGE_ID, "API_HOST", "Back end for service", "${API_SERVER}" )
+							createAlias(APIGW_SERVER, STAGE_ID, "API_HOST", "Back end for service", "devops-demo_helloworld_1:5555" )
 						} catch (err) {
 							println("Promotion env creation error : "+err)
 						}						
